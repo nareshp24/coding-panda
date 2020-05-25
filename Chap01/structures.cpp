@@ -41,12 +41,5 @@ int main() {
 
     std::cout << "r1 is a square: " << isSquare(r1) << std::endl;
 
-
-    int a, b, c;
-    std::string d, e, f;
-
-    c = a + b;
-    f = e + d;
-
     return 0;
 }
