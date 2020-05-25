@@ -2,3 +2,6 @@ homework/
 CMakeLists.txt
 .idea
 cmake-build-debug
+Chap01/foobar.cpp
+Chap01/basic.cpp
+Chap01/dynMemory.cpp
