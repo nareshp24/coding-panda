@@ -1,15 +1,25 @@
 #include <iostream>
 
+// Note:
+// Function Overloading: *Signature (Identifier + input parameters)
+
+// Hidden "this" pointer: Method call => first parameter is the address of the instance/object [* hidden]
+// Advantages
+// 1. avoid naming conflict
+// 2. return the reference to that object (itself)
+
 // Operator Overloading
-// Function Overloading
-// Hidden "this" pointer
+// operators are defined as functions.
+// Function name 'operator-symbol'
 
 class ComplexNumber
 {
 public:
     ComplexNumber(int real=0, int imaginary=0):m_real(real), m_imaginary(imaginary)
     {}
-    void setReal (int real)
+
+    // Setters
+    void setReal (int real) // Non-const method
     {
         m_real = real;
     }
@@ -17,22 +27,27 @@ public:
     {
         m_imaginary = imaginary;
     }
-    int getReal()
+
+    // Getters
+    int getReal() const
     {
         return m_real;
     }
-    int getImaginary()
+
+    int getImaginary() const
     {
         return m_imaginary;
     }
 
-    void add(ComplexNumber& other)
+    // Method for addition
+    ComplexNumber& add(ComplexNumber& other)
     {
         m_real = m_real + other.getReal();
         m_imaginary = m_imaginary + other.getImaginary();
+        return *this;
     }
-
-    void print()
+    // Prints the Complex Number
+    void print() const
     {
         if (m_imaginary>=0)
             std::cout<<m_real<<" + "<<m_imaginary<<"i"<<std::endl;
@@ -40,20 +55,40 @@ public:
             std::cout<<m_real<<" -  "<<(-m_imaginary)<<"i"<<std::endl;
     }
 
+    // Operators overloading as a member function
+    ComplexNumber operator+(ComplexNumber& right)
+    {
+        int real = this->m_real + right.getReal();
+        int imaginary = this->m_imaginary + right.getImaginary();
+
+        return ComplexNumber(real, imaginary) ;
+    }
+
+
 private:
     int m_real;
     int m_imaginary;
 };
 
-
-ComplexNumber operator+(ComplexNumber& left, ComplexNumber& right)
+// Arithmetic Operators
+// Redefinition of the '-' operators to add two complex Numbers
+ComplexNumber operator-(ComplexNumber& left, ComplexNumber& right)
 {
-    int real = left.getReal() + right.getReal();
-    int imaginary = left.getImaginary() + right.getImaginary();
-    ComplexNumber temp(real, imaginary) ;// 0x123434 (6 - 2i) => temp
-    return temp;
+    int real = left.getReal() - right.getReal();
+    int imaginary = left.getImaginary() - right.getImaginary();
+
+    return ComplexNumber(real, imaginary) ;
 }
 
+// Unary Operator
+void operator++(ComplexNumber& num)
+{
+    num.setReal(num.getReal()+1);
+    num.setImaginary(num.getImaginary()+1);
+}
+
+// I/O operator
+// Our own version of insertion operator to output the Complex Number for printing it in the console
 std::ostream& operator<<(std::ostream& out, ComplexNumber& num )
 {
     if (num.getImaginary()>=0)
@@ -66,19 +101,24 @@ std::ostream& operator<<(std::ostream& out, ComplexNumber& num )
 
 int main()
 {
+
     ComplexNumber x1(4,-5); // x1 = 4 - 5i
     ComplexNumber x2(2,3); // x2 = 2 + 3i
 
-    // x1.add(x2); // x1 = x1 + x2
+    ComplexNumber x3 = x1 + x2; //
+    // x1.operator+(x2)
+    // operator+(&x1, x2)
 
-    // int a = 10 + 12  => operator + => adds 2 numbers
-    // string s = "Hello " + "World" => operator + => concatinates 2 strings
-    // Operator + (complex Number) => x1 = a1 + b1i, x2 = a2 + b2i,    x1 + x2 = (a1+a2) + (b1+b2)i
+    const ComplexNumber const_x1(1,2);
+    const_x1.getReal();
 
-    ComplexNumber x3 = x1 + x2;
+    std::cout<<"x1: "<<x1<<std::endl;
 
-    std::cout<<x1<<std::endl;
+    std::cout<<"x2: "<<x2<<std::endl;
 
-    x3.print(); // 6 - 2i
+    std::cout<<"x3: ";
+    x3.print(); // print(&x3)
+    std::cout<<std::endl; // 6 - 2i
+
     return 0;
 }
